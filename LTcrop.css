@@ -1,0 +1,248 @@
+/*
+ * @Author: Terence
+ * @Date:   2018-06-04 18:29:57
+ * @Last Modified by: Terence
+ * @Last Modified time: 2018-06-14 12:49:34
+*/
+
+
+[LTcrop_id="lt"] {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	top: 0;
+	left: 0;
+	width: 50px;
+	height: 50px;
+	border-top: 5px solid #fff;
+	border-left: 5px solid #fff;
+	cursor: nw-resize;
+}
+
+[LTcrop_id="ct"] {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	top: 0;
+	left: 50%;
+	margin-left: -25px;
+	width: 50px;
+	height: 5px;
+	border-top: 5px solid #fff;
+	cursor: ns-resize;
+}
+
+
+[LTcrop_id="rt"] {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	top: 0;
+	right: 0;
+	width: 50px;
+	height: 50px;
+	border-top: 5px solid #fff;
+	border-right: 5px solid #fff;
+	cursor: ne-resize;
+}
+
+[LTcrop_id="lc"] {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	top: 50%;
+	left: 0;
+	width: 5px;
+	height: 50px;
+	margin-top: -25px;
+	border-left: 5px solid #fff;
+	cursor: ew-resize;
+}
+
+[LTcrop_id="rc"] {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	top: 50%;
+	right: 0;
+	width: 5px;
+	height: 50px;
+	margin-top: -25px;
+	border-right: 5px solid #fff;
+	cursor: ew-resize;
+}
+
+[LTcrop_id="lb"] {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	bottom: 0;
+	left: 0;
+	width: 50px;
+	height: 50px;
+	border-left: 5px solid #fff;
+	border-bottom: 5px solid #fff;
+	cursor: sw-resize;
+}
+
+[LTcrop_id="cb"] {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	bottom: 0;
+	left: 50%;
+	margin-left: -25px;
+	width: 50px;
+	height: 5px;
+	border-bottom: 5px solid #fff;
+	cursor: ns-resize;
+}
+
+[LTcrop_id="rb"] {
+	position: absolute;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	bottom: 0;
+	right: 0;
+	width: 50px;
+	height: 50px;
+	border-right: 5px solid #fff;
+	border-bottom: 5px solid #fff;
+	cursor: se-resize;
+}
+
+[LTcrop_id="cover"] {
+	position: absolute;
+	display: none;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	z-index: 100;
+	cursor: move;
+}
+
+[LTcrop_id="img"] {
+	position: absolute;
+	z-index: 99;
+	border: none;
+	outline: none;
+	margin: 0;
+	padding: 0;
+}
+[ltcrop_id="croppingBox"] {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, .5);
+	overflow: hidden;
+}
+
+[ltcrop_id="toolbar"], [ltcrop_id="operabar"] {
+	position: absolute;
+	width: 388px;
+	height: 50px;
+	font-size: 14px;
+	line-height: 50px;
+	z-index: 101;
+	background: #000;
+	border-radius: 5px;
+	overflow: hidden;
+	-weikit-transition: .2s;
+	transition: .2s;
+}
+
+[ltcrop_id="cropbtn"] {
+	display: inline-block;
+	width: 30%;
+	text-align: center;
+	color: #fff;
+	cursor: pointer;
+	font-style: normal;
+}
+
+[ltcrop_id="rotatebtn"] {
+	display: inline-block;
+	width: 30%;
+	text-align: center;
+	color: #fff;
+	cursor: pointer;
+	font-style: normal;
+}
+
+[ltcrop_id="confirmbtn"] {
+	position: absolute;
+	top: 7px;
+	right: 30px;
+	width: 90px;
+	height: 36px;
+	line-height: 36px;
+	text-align: center;
+	color: #0082E7;
+	border-radius: 3px;
+	cursor: pointer;
+	background: #fff;
+	font-style: normal;
+}
+
+[ltcrop_id="scalebar"] {
+	width: 400px;
+	height: 50px;
+	background: rgba(0, 0, 0, .5);
+	border-radius: 3px;
+	z-index: 103;
+	-weikit-transition: .2s;
+	transition: .2s;
+}
+
+[ltcrop_id="scaleup"] {
+	position: absolute;
+	top: 16px;
+	right: 37px;
+	color: #fff;
+}
+
+[ltcrop_id="scaledown"] {
+	position: absolute;
+	top: 16px;
+	left: 37px;
+	color: #fff;
+}
+
+[ltcrop_id="scalebtnWrap"] {
+	position: absolute;
+	top: 24px;
+	left: 71px;
+	width: 258px;
+	height: 2px;
+	background: #fff;
+}
+
+[ltcrop_id="scalebtn"] {
+	position: absolute;
+	left: 0;
+	top: -6px;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: #0082E7;
+}
+
+[ltcrop_id="save"], [ltcrop_id="cancel"] {
+	position: absolute;
+	width: 90px;
+	height: 36px;
+	top: 7px;
+	line-height: 36px;
+	text-align: center;
+	color: #0082E7;
+	border-radius: 3px;
+	cursor: pointer;
+	background: #fff;
+}
+
+[ltcrop_id="save"] {
+	left: 65px;
+}
+
+[ltcrop_id="cancel"] {
+	right: 65px;
+}

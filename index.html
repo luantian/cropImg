@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>图片裁剪</title>
+	<link rel="stylesheet" type="text/css" href="LTcrop.css">
+	<link rel="stylesheet" href="iconfont/iconfont.css">
+	<style>
+		#crop {
+			position: absolute;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+		}
+	</style>
+</head>
+<body>
+
+	<div id="crop"></div>
+
+	<script type="text/javascript" src="LTcrop.js"></script>
+	<script>
+		$_$Crop({
+			container: document.getElementById('crop'),
+			image_src: '4.jpg',
+			rotate: 1,
+			output: function(data) {
+				console.log('data: ', data);
+				console.log('blob: ', data.blob);
+			}
+		});
+	</script>
+</body>
+</html>
