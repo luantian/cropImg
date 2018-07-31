@@ -2,7 +2,7 @@
  * @Author: Terence 
  * @Date: 2018-06-05 16:54:41 
  * @Last Modified by: Terence
- * @Last Modified time: 2018-06-14 21:32:59
+ * @Last Modified time: 2018-07-31 10:56:47
  */
 
 /**
@@ -22,12 +22,22 @@
 
 	
 	var Crop = function(option) {
+		/**
+		 * 参数变量
+		 */
 		this.renderTo = option.container;
 		this.renderTo.innerHTML = '';
 		this.output = option.output;
-		this.type = option.type || "jpg";
+		this.type = "jpeg";
 		this.image_src = option.image_src;
 
+		/**
+		 * @var {Number}  width  文档的宽
+		 * @var {Number}  height  文档的高
+		 * @var {Number}  cover_width 裁剪框的宽
+		 * @var {Number}  cover_height 裁剪框的宽
+		 * @var {Number}  scalebtnWrap_width  缩放按钮外层的宽
+		 */
 		this.doc = document;
 		this.width = this.renderTo.offsetWidth;
 		this.height = this.renderTo.offsetHeight;
@@ -36,7 +46,16 @@
 		this.scalebtnWrap_width = 258;
 		this.timer = null;
 
+		/**
+		 * @var {Number} scale 图片的缩放比例值
+		 * @var {Number} canvasScale  canvas的缩放比例值
+		 * @var {Number} rotateNum  传入的旋转角度的参数，默认为0
+		 * @var {Number} rotate rotateNum * 90
+		 * @var {Boolean} onOffRatate 旋转按钮的开关
+		 * @var {Boolean} isCrop 图片是否经过裁剪
+		 */
 		this.scale = 1;
+		this.canvasScale = 1;
 		this.rotateNum = option.rotate || 0;
 		this.rotate = this.rotateNum * 90;
 		this.onOffRatate = true;
@@ -144,6 +163,7 @@
 		this.img.onload = function() {
 			This.init();
 		}
+
 	}
 
 	Crop.prototype.init = function() {
@@ -158,14 +178,20 @@
 		this.scaleFlag = false;
 		this.img_width = this.img.width;
 		this.img_height = this.img.height;
+
 		
 		/**
 		 * 给元素设置样式
 		 */
 		this.setStyle();
-
+		/**
+		 * 设置拖拽的八个按钮
+		 */
 		this.setPoints();
 
+		/**
+		 * @var {Number}  init_max_width  设置
+		 */
 		var init_max_width = this.width * 0.7;
 		var init_max_height = this.height - this.scalebar.offsetHeight - this.toolbar.offsetHeight - 50;
 
@@ -215,6 +241,10 @@
 		this.img.onmousewheel = function(ev) {
 			This.onMouseWheel.call(This, ev);
 		}
+
+		this.canvas.onmousewheel = function(ev) {
+			This.onMouseWheel.call(This, ev);
+		}
 	}
 
 	Crop.prototype.down = function(ev) {
@@ -253,6 +283,8 @@
 				this.downScaleUp(ev);
 			break;
 		}
+
+		document.addEventListener("mousemove", that.move, true);
 
 		if (this.drags.indexOf(crop_id) >= 0) {
 			this.dragAngleDom = target;
@@ -297,6 +329,7 @@
 				}
 			}
 		}
+		document.removeEventListener("mousemove", that.move, true);
 		this.scaleFlag = false;
 	}
 
@@ -469,11 +502,16 @@
 		
 		this.rotateNum = 0;
 		this.rotate = this.rotateNum * 90;
+		this.canvasScale = 1;
 		this._css(this.img, {
 			WebkitTransform: 'scale('+ this.scale + ',' + this.scale +') rotate('+ this.rotate +'deg)',
 			transform: 'scale('+ this.scale + ',' + this.scale +') rotate('+ this.rotate +'deg)'
 		});
-		this.hideScalebar();
+		this._css(this.canvas, {
+			WebkitTransform: 'scale('+ this.canvasScale + ',' + this.canvasScale +')',
+			transform: 'scale('+ this.canvasScale + ',' + this.canvasScale +')'
+		});
+		this.showScalebar();
 		this.hideCanvas();
 		this.showImg();
 		this.showCover();
@@ -488,14 +526,15 @@
 		} else {
 			this.rotateNum++;
 		}
-		console.log(this.rotateNum);
-		this.scale = this.initScale;
+		// this.scale = this.initScale;
+		// this.canvasScale = 1;
 		this.rotate = 90 * this.rotateNum;
-		this.setImgScale(this.initScale);
+		this.setImgScale(this.scale);
 		this._css(this.canvas, {
-			WebkitTransform: 'rotate('+ this.rotate +'deg)',
-			transform: 'rotate('+ this.rotate +'deg)'
+			WebkitTransform: 'scale('+ this.canvasScale + ',' + this.canvasScale +') rotate('+ this.rotate +'deg)',
+			transform: 'scale('+ this.canvasScale + ',' + this.canvasScale +') rotate('+ this.rotate +'deg)',
 		});
+
 	}
 
 	Crop.prototype.downSave = function(ev) {
@@ -520,15 +559,25 @@
 		this.crop_rect = [left, top, width, height];
 		// console.log(this.crop_rect);
 
-		this.canvas.width = width * this.scale;
-		this.canvas.height = height * this.scale;
+		this.canvas.width = parseInt(width * this.scale);
+		this.canvas.height = parseInt(height * this.scale);
 		
-		this.ctx.drawImage(this.img, this.crop_rect[0], this.crop_rect[1], this.crop_rect[2], this.crop_rect[3], 0, 0, this.crop_rect[2] * this.scale, this.crop_rect[3] * this.scale);
+		this.ctx.drawImage(
+			this.img, 
+			parseInt(this.crop_rect[0]), 
+			parseInt(this.crop_rect[1]), 
+			parseInt(this.crop_rect[2]),
+			parseInt(this.crop_rect[3]), 
+			0, 
+			0, 
+			parseInt(this.crop_rect[2] * this.scale), 
+			parseInt(this.crop_rect[3] * this.scale)
+		);
 		
 		this._css(this.canvas, {
 			position: 'absolute',
-			left: -(this.canvas.width - this.width) / 2 + "px",
-			top: -(this.canvas.height - this.height) / 2 + "px",
+			left: -parseInt((this.canvas.width - this.width) / 2) + "px",
+			top: -parseInt((this.canvas.height - this.height) / 2) + "px",
 			WebkitTransform: 'rotate('+ this.rotate +'deg)',
 			transform: 'rotate('+ this.rotate +'deg)',
 			zIndex: 100
@@ -559,14 +608,17 @@
 
 	Crop.prototype.downConfirmbtn = function(ev) {
 		var data = {};
-		var base64 = this.canvas.toDataURL("image/" + this.type, 0.7);
+		var base64 = this.canvas.toDataURL("image/" + this.type, 0.8);
 		var blob = this.dataURItoBlob(base64);
 		
 		if (this.isCrop) {
 			data.base64 = base64;
 			data.blob = blob;
+		} else {
+			data.url = this.image_src;
 		}
 		data.rotateNum = this.rotateNum;
+		data.isCrop = this.isCrop;
 		this.output(data);
 	}
 
@@ -631,7 +683,7 @@
 			position: 'absolute',
 			width: this.scalebar_width + 'px',
 			left: -(this.scalebar.offsetWidth - this.width) / 2 + "px",
-			top: 10 + "px"
+			top: -100 + "px",
 		});
 
 		this._css(this.scalebtn, {
@@ -758,7 +810,7 @@
 			this._css(this.scalebtn, {
 				left: scale / 2 * this.scalebtnWrap_width - this.scalebtn.offsetWidth/2 + 'px'
 			});
-			this.scale = scale;
+			this.scale = scale.toFixed(2);
 		} else {
 			this.scale = (parseInt(this.scalebtn.style.left) + this.scalebtn.offsetWidth/2) / this.scalebtnWrap_width * 2;
 		}
@@ -789,21 +841,46 @@
 		for (var i = 0; i < byteString.length; i++) {
 			ia[i] = byteString.charCodeAt(i);
 		}
-		return new Blob([ia], {type:"image/jpg"});
+		return new Blob([ia], {type:"image/jpeg"});
 	}
 
 	Crop.prototype.onMouseWheel = function(ev) {
+		var domName = ev.target.tagName.toLowerCase();
 		var bDown = true;
 		var This = this;
 		
 		bDown = ev.wheelDelta ? ev.wheelDelta < 0 : ev.detail > 0;
 		
 		if(bDown) {
-			console.log('向下滚动');
-			this.scale += 0.05;
+			// console.log('向下滚动');
+			if (domName == 'canvas') {
+				this.canvasScale -= 0.05;
+			} else {
+				this.scale -= 0.05;
+			}
+			
 		} else {
-			console.log('向上滚动');
-			this.scale -= 0.05;
+			// console.log('向上滚动');
+			if (domName == 'canvas') {
+				this.canvasScale += 0.05;
+			} else {
+				this.scale += 0.05;
+			}
+		}
+		if (domName == 'canvas') {
+
+			if (this.canvasScale <= 0.0542636) {
+				this.canvasScale = 0.0542636;
+			} else if (this.canvasScale >= 1.94574) {
+				this.canvasScale = 1.94574;
+			}
+
+			this._css(this.canvas, {
+				WebkitTransform: 'scale('+ this.canvasScale + ',' + this.canvasScale +') rotate('+ this.rotate +'deg)',
+				transform: 'scale('+ this.canvasScale + ',' + this.canvasScale +') rotate('+ this.rotate +'deg)'
+			});
+
+			return false;
 		}
 		clearTimeout(this.timer);
 		this.timer = setTimeout(function() {
@@ -814,7 +891,7 @@
 					break;
 				}
 			}
-			console.log(This.pointNum);
+			// console.log(This.pointNum);
 		}, 200);
 		
 
