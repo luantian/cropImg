@@ -1,8 +1,8 @@
 /*
  * @Author: Terence 
  * @Date: 2018-06-05 16:54:41 
- * @Last Modified by: Terence
- * @Last Modified time: 2018-07-31 10:56:47
+ * @Last Modified by:   Terence
+ * @Last Modified time: 2018-07-31 11:42:55
  */
 
 /**
@@ -284,7 +284,7 @@
 			break;
 		}
 
-		document.addEventListener("mousemove", that.move, true);
+		document.addEventListener("mousemove", this.move, true);
 
 		if (this.drags.indexOf(crop_id) >= 0) {
 			this.dragAngleDom = target;
@@ -329,7 +329,7 @@
 				}
 			}
 		}
-		document.removeEventListener("mousemove", that.move, true);
+		document.removeEventListener("mousemove", this.move, true);
 		this.scaleFlag = false;
 	}
 
