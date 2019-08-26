@@ -2,7 +2,7 @@
  * @Author: Terence 
  * @Date: 2018-06-05 16:54:41 
  * @Last Modified by:   Terence
- * @Last Modified time: 2018-07-31 11:42:55
+ * @Last Modified time: 2019-08-26 10:54:36
  */
 
 /**
@@ -597,7 +597,7 @@
 	Crop.prototype.downCancel = function(ev) {
 		this.rotateNum = 0;
 		this.setImgScale(this.initScale);
-		this.showScalebar();
+		this.hideScalebar();
 		this.hideCanvas();
 		this.showImg();
 		this.hideCover();
