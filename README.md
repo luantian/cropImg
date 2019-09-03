@@ -5,8 +5,6 @@
     $_$Crop({
         container: document.getElementById('crop'),
         image_src: 'timg.jpeg',
-        cover_width: 200,
-        cover_height: 100,
         output: function(data) {
             console.log('data: ', data);
             console.log('blob: ', data.blob);
