@@ -15,10 +15,10 @@
     });
 ``` 
 ### 配置参数
-| param        | type          |  default                              |   need   | description                                                  |
-|  :----:      |  :----:       |  :----:                               |  :----:  |  :----:                                                      | 
-| container    | DOM           |   null                                |   true   | 加载树结构的dom节点                                            |
-| output    |   Function       |   null                                |   true   |裁剪完成后的回调函数                                            |
+| param | type |  default  |   need   | description  |
+|  :----:  |  :----:       |  :----:     |  :----:  |  :----: | 
+| container|DOM|null|true|加载树结构的dom节点|
+| output|Function|null|true|裁剪完成后的回调函数|
 |cover_width|  Number | window.width * 0.5 | false |
 |cover_height|  Number | window.height * 0.5 | false |
-|image_src|  String | 图片的链接地址 | false |
+|image_src|  String | null | true |图片的链接地址|
