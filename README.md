@@ -1,7 +1,6 @@
 # cropimg 图片裁剪
 ### 一个原生js编写的图片裁剪插件
 
-### 使用实例, * 表示必传参数
 ```javascript
     $_$Crop({
         container: document.getElementById('crop'),
