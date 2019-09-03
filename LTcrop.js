@@ -2,16 +2,18 @@
  * @Author: Terence 
  * @Date: 2018-06-05 16:54:41 
  * @Last Modified by:   Terence
- * @Last Modified time: 2019-08-26 10:54:36
+ * @Last Modified time: 2019-09-03 16:21:37
  */
 
 /**
  * 
  * @param {Dom} container 		最外层DOM
- * @param {Function} output 	裁剪完成的回调函数 返回 裁剪后的图片数据base64
- * @param {String}	type		图片类型，默认jpg
+ * @param {Function} output 	裁剪完成的回调函数 返回 裁剪后的图片数据base64和blob
+ * @param {String}	type		输出图片类型，默认jpg
  * @param {Number}	rotate		初始化图片旋转的角度[0, 1, 2, 3]
  * @param {String}	image_src	加载图片的地址
+ * @param {Number}  cover_width 裁剪框初始化宽度
+ * @param {Number}  cover_height裁剪框初始化高度
  * 
  */
 
@@ -28,8 +30,9 @@
 		this.renderTo = option.container;
 		this.renderTo.innerHTML = '';
 		this.output = option.output;
-		this.type = "jpeg";
+		this.type = option.type || "jpeg";
 		this.image_src = option.image_src;
+        this.compression = .8;
 
 		/**
 		 * @var {Number}  width  文档的宽
@@ -41,8 +44,8 @@
 		this.doc = document;
 		this.width = this.renderTo.offsetWidth;
 		this.height = this.renderTo.offsetHeight;
-		this.cover_width = this.width * 0.5;
-		this.cover_height = this.height * 0.5;
+		this.cover_width = this.min150(parseInt(option.cover_width)) || this.width * 0.5;
+		this.cover_height = this.min150(parseInt(option.cover_height)) || this.height * 0.5;
 		this.scalebtnWrap_width = 258;
 		this.timer = null;
 
@@ -608,7 +611,7 @@
 
 	Crop.prototype.downConfirmbtn = function(ev) {
 		var data = {};
-		var base64 = this.canvas.toDataURL("image/" + this.type, 0.8);
+		var base64 = this.canvas.toDataURL("image/" + this.type, this.compression);
 		var blob = this.dataURItoBlob(base64);
 		
 		if (this.isCrop) {
@@ -908,10 +911,16 @@
 		return false;
 	}
 
+    Crop.prototype.min150 = function(num) {
+        var min = 150
+        if (num < min) return min;
+        return num
+    }
 
 	if (typeof module !== 'undefined' && typeof exports === 'object') {
 		module.exports = $_$Crop;
 	} else {
 		window.$_$Crop = $_$Crop;
 	}
+
 })();

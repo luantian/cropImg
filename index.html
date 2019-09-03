@@ -16,14 +16,14 @@
 	</style>
 </head>
 <body>
-
 	<div id="crop"></div>
-
 	<script type="text/javascript" src="LTcrop.js"></script>
 	<script>
 		$_$Crop({
 			container: document.getElementById('crop'),
-			image_src: '4.jpg',
+			image_src: 'timg.jpeg',
+			cover_width: 200,
+			cover_height: 100,
 			output: function(data) {
 				console.log('data: ', data);
 				console.log('blob: ', data.blob);
