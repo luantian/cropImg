@@ -19,4 +19,4 @@
 |image_src|  String | null | true |图片的链接地址|
 |cover_width|  Number | window.width * 0.5 | false |裁剪框的宽度
 |cover_height|  Number | window.height * 0.5 | false |裁剪框的高度
-
+|disableDragCover|  Boolean | false | false |禁止改变裁剪窗口大小

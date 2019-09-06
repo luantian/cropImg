@@ -2,7 +2,7 @@
  * @Author: Terence 
  * @Date: 2018-06-05 16:54:41 
  * @Last Modified by:   Terence
- * @Last Modified time: 2019-09-03 16:21:37
+ * @Last Modified time: 2019-09-06 13:03:46
  */
 
 /**
@@ -32,6 +32,7 @@
 		this.output = option.output;
 		this.type = option.type || "jpeg";
 		this.image_src = option.image_src;
+		this.disableDragCover = option.disableDragCover || false
         this.compression = .8;
 
 		/**
@@ -382,6 +383,7 @@
 	}
 
 	Crop.prototype.dragAngle = function(ev, target) {
+		if ( this.disableDragCover ) return;
 		var left = ev.clientX - this.disX;
 		var top = ev.clientY - this.disY;
 
