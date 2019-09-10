@@ -1,8 +1,8 @@
 /*
  * @Author: Terence 
  * @Date: 2018-06-05 16:54:41 
- * @Last Modified by:   Terence
- * @Last Modified time: 2019-09-06 13:03:46
+ * @Last Modified by: Terence
+ * @Last Modified time: 2019-09-10 15:33:35
  */
 
 /**
@@ -13,8 +13,8 @@
  * @param {Number}	rotate		初始化图片旋转的角度[0, 1, 2, 3]
  * @param {String}	image_src	加载图片的地址
  * @param {Number}  cover_width 裁剪框初始化宽度
- * @param {Number}  cover_height裁剪框初始化高度
- * 
+ * @param {Number}  cover_height 裁剪框初始化高度
+ * @param {Boolean}  disableDragCover 是否禁止拖拽改变裁剪框大小
  */
 
 ;(function(){
@@ -45,9 +45,10 @@
 		this.doc = document;
 		this.width = this.renderTo.offsetWidth;
 		this.height = this.renderTo.offsetHeight;
-		this.cover_width = this.min150(parseInt(option.cover_width)) || this.width * 0.5;
-		this.cover_height = this.min150(parseInt(option.cover_height)) || this.height * 0.5;
+		this.cover_width = this.min150(parseInt(option.cover_width)) || parseInt(this.width * 0.5);
+		this.cover_height = this.min150(parseInt(option.cover_height)) || parseInt(this.height * 0.5);
 		this.scalebtnWrap_width = 258;
+		this.cropMin = 150;
 		this.timer = null;
 
 		/**
@@ -86,9 +87,19 @@
 		this.scaleup = this.doc.createElement("i");
 		this.scaledown = this.doc.createElement("i");
 
+
+		this.setCropWrap = this.doc.createElement('div');
+		this.inputWidthLabel = this.doc.createElement('label');
+		this.inputHeightLabel = this.doc.createElement('label');
+		this.inputWidth = this.doc.createElement('input');
+		this.inputHeight = this.doc.createElement('input');
+		
+
 		this.operabar = this.doc.createElement('div');
 		this.cancel = this.doc.createElement('div');
 		this.save = this.doc.createElement('div');
+
+		
 		/**
 		 * 生成相应DOM元素  结束
 		 */
@@ -127,6 +138,8 @@
 		this.croppingBox.appendChild(this.operabar);
 		this.scalebar.setAttribute('LTcrop_id', 'scalebar');
 		this.croppingBox.appendChild(this.scalebar);
+		
+
 		this.croppingBox.setAttribute('LTcrop_id', 'croppingBox');
 		this.cropbtn.setAttribute('LTcrop_id', 'cropbtn');
 		this.rotatebtn.setAttribute('LTcrop_id', 'rotatebtn');
@@ -152,7 +165,29 @@
 		this.cancel.setAttribute('LTcrop_id', 'cancel');
 		this.operabar.appendChild(this.cancel);
 		this.operabar.appendChild(this.save);
+
+		this.inputWidth.setAttribute('type', 'number');
+		this.inputWidth.setAttribute('LTcrop_id', 'inputWidth');
+		this.inputWidth.value = this.cover_width;
+		this.inputHeight.setAttribute('type', 'number');
+		this.inputHeight.setAttribute('LTcrop_id', 'inputHeight');
+		this.inputHeight.value = this.cover_height;
+		
+		this.inputWidthLabel.innerHTML = '宽';
+		this.inputHeightLabel.innerHTML = '高';
+		
+		
 		this.croppingBox.appendChild(this.canvas);
+		
+		this.setCropWrap.setAttribute('LTcrop_id', 'setCropWrap');
+		this.inputWidthLabel.setAttribute('LTcrop_id', 'widthLabel')
+		this.inputHeightLabel.setAttribute('LTcrop_id', 'heightLabel')
+		this.inputWidthLabel.appendChild(this.inputWidth);
+		this.inputHeightLabel.appendChild(this.inputHeight);
+		this.setCropWrap.appendChild(this.inputWidthLabel);
+		this.setCropWrap.appendChild(this.inputHeightLabel);
+
+		this.renderTo.appendChild(this.setCropWrap);
 		this.renderTo.appendChild(this.croppingBox);
 
 		this.cropbtn.innerHTML = '裁剪';
@@ -225,7 +260,7 @@
 		/**
 		 * 取消拖拽选中的默认事件
 		 */
-		this.renderTo.onselectstart = function () {
+		this.croppingBox.onselectstart = function () {
 			return false;
 		}
 		
@@ -233,13 +268,13 @@
 		 * 绑定拖拽所需要的事件
 		 */
 
-		this.renderTo.onmousedown = function(ev) {
+		this.croppingBox.onmousedown = function(ev) {
 			This.down.call(This, ev);
 		}
-		this.renderTo.onmousemove = function(ev) {
+		this.croppingBox.onmousemove = function(ev) {
 			This.move.call(This, ev);
 		}
-		this.renderTo.onmouseup = function(ev) {
+		this.croppingBox.onmouseup = function(ev) {
 			This.up.call(This, ev);
 		}
 		this.img.onmousewheel = function(ev) {
@@ -248,6 +283,15 @@
 
 		this.canvas.onmousewheel = function(ev) {
 			This.onMouseWheel.call(This, ev);
+		}
+
+		this.inputWidth.oninput = function(ev) {
+			var val = This.min150(parseInt(this.value))
+			This.cover.style.width = val + 'px';
+		}
+		this.inputHeight.oninput = function(ev) {
+			var val = This.min150(parseInt(this.value))
+			This.cover.style.height = val + 'px';
 		}
 	}
 
@@ -311,7 +355,7 @@
 		ev.preventDefault();
 		var This = this;
 		if (this.imgFlag) return this.drag(ev, this.img);
-		if (this.coverFlag) return this.drag(ev, this.cover, this.renderTo);
+		if (this.coverFlag) return this.drag(ev, this.cover, this.croppingBox);
 		if (this.angleFlag) return this.dragAngle(ev, this.dragAngleDom);
 		if (this.scaleFlag) return this.drag(ev, this.scalebtn, this.scalebtnWrap, 'h', function() {
 			This.isScaleMoved = true;
@@ -480,6 +524,8 @@
 				});
 			break;
 		}
+		this.inputWidth.value = parseInt(this.cover.style.width);
+		this.inputHeight.value = parseInt(this.cover.style.height);
 	}
 
 	Crop.prototype.downCover = function(ev) {
@@ -522,6 +568,7 @@
 		this.showCover();
 		this.hideToolbar();
 		this.showOperabar();
+		this.showSetCropWrap();
 	}
 
 	Crop.prototype.downRotatebtn = function() {
@@ -594,6 +641,7 @@
 		this.hideCover();
 		this.hideImg();
 		this.showCanvas();
+		this.hideSetCropWrap();
 
 		this.isCrop = true;
 		
@@ -608,6 +656,7 @@
 		this.hideCover();
 		this.showToolbar();
 		this.hideOperabar();
+		this.hideSetCropWrap();
 		this.isCrop = false;
 	}
 
@@ -649,7 +698,6 @@
 		this.isScaleMoved = false;
 	}
 
-
 	Crop.prototype._css = function (el, obj) {
 		for (var key in obj) {
 			if (obj.hasOwnProperty(key)) {
@@ -666,15 +714,7 @@
 			});
 		}
 		
-		this._css(this.cover, {
-			position: 'absolute',
-			width: this.cover_width + 'px',
-			height: this.cover_height  + 'px',
-			left: (this.width - this.cover_width) / 2 + "px",
-			top: (this.height - this.cover_height) / 2 + "px",
-			border: this.border_width + 'px solid #fff',
-			boxShadow: 'rgba(0, 0, 0, 0.6) 0px 0px 0px 10000px'
-		});
+		this.setCropStyle();
 
 		this._css(this.img, {
 			position: 'absolute',
@@ -713,6 +753,18 @@
 		});
 
 	};
+
+	Crop.prototype.setCropStyle = function() {
+		this._css(this.cover, {
+			position: 'absolute',
+			width: this.cover_width + 'px',
+			height: this.cover_height  + 'px',
+			left: (this.width - this.cover_width) / 2 + "px",
+			top: (this.height - this.cover_height) / 2 + "px",
+			border: this.border_width + 'px solid #fff',
+			boxShadow: 'rgba(0, 0, 0, 0.6) 0px 0px 0px 10000px'
+		});
+	}
 
 	// top left (x1,y1) and bottom right (x2,y2) coordination
 	Crop.prototype.getOverlap = function (ax1, ay1, ax2, ay2, bx1, by1, bx2, by2) {
@@ -807,6 +859,18 @@
 	Crop.prototype.hideCanvas = function() {
 		this._css(this.canvas, {
 			display: 'none'
+		});
+	}
+
+	Crop.prototype.showSetCropWrap = function() {
+		this._css(this.setCropWrap, {
+			left: '10px'
+		});
+	}
+
+	Crop.prototype.hideSetCropWrap = function() {
+		this._css(this.setCropWrap, {
+			left: '-400px'
 		});
 	}
 
@@ -914,8 +978,7 @@
 	}
 
     Crop.prototype.min150 = function(num) {
-        var min = 150
-        if (num < min) return min;
+        if (num < this.cropMin) return this.cropMin;
         return num
     }
 

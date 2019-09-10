@@ -1,8 +1,8 @@
 /*
  * @Author: Terence
  * @Date:   2018-06-04 18:29:57
- * @Last Modified by:   Terence
- * @Last Modified time: 2018-12-10 10:21:02
+ * @Last Modified by: Terence
+ * @Last Modified time: 2019-09-10 14:15:42
 */
 
 
@@ -245,4 +245,16 @@
 
 [ltcrop_id="cancel"] {
 	right: 65px;
+}
+
+[ltcrop_id="setCropWrap"] {
+	position: absolute; top: 0; left: -400px; z-index: 101; line-height: 40px; transition: .2s;
+}
+
+[ltcrop_id="widthLabel"], [ltcrop_id="heightLabel"] {
+	color: #fff;
+}
+
+[ltcrop_id="inputWidth"], [ltcrop_id="inputHeight"] {
+	width: 60px; height: 20px; border: none; outline: none; margin:0 10px;
 }
